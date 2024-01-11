@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-// import { Pool } from 'pg';
-import { PrismaClient } from '@prisma/client'
+import { Pool } from 'pg';
+import { PrismaClient } from '@prisma/client/edge'
 
 /**
  *
@@ -19,9 +19,10 @@ import { PrismaClient } from '@prisma/client'
 //     password: 'Teste222',
 //     port: 5432, // Porta padrão do PostgreSQL
 // });
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    console.log(event.httpMethod)
     if (event.httpMethod !== 'GET') {
         throw new Error(`getAllItems only accept GET method, you tried: ${event.httpMethod}`);
     }
