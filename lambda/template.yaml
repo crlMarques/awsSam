@@ -17,8 +17,16 @@ Resources:
       CodeUri: hello-world/
       Handler: app.lambdaHandler
       Runtime: nodejs18.x
+      ImageConfig:
+        Command:
+          - "npx"
+          - "prisma"
+          - "generate"
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          DATABASE_URL: postgresql://postgres:1234@172.17.0.2:5432/test?schema=public
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -33,6 +41,10 @@ Resources:
         Sourcemap: true
         EntryPoints: 
         - app.ts
+        Loader:
+          - .prisma=file
+          - .so.node=file
+        AssetNames: '[name]'
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

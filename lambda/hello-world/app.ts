@@ -1,7 +1,13 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Pool } from 'pg';
-import { PrismaClient } from '@prisma/client/edge'
-
+import { PrismaClient } from '@prisma/client'
+import * as schema from './prisma/schema.prisma';
+import * as x from './node_modules/.prisma/client/libquery_engine-debian-openssl-1.1.x.so.node';
+import * as l from './node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node';
+ 
+if (process.env.NODE_ENV !== 'production') {
+    console.debug(schema, x, l);
+}
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -14,9 +20,9 @@ import { PrismaClient } from '@prisma/client/edge'
 
 // const pool = new Pool({
 //     user: 'postgres',
-//     host: 'rampup.cjsk8m48wih8.us-east-1.rds.amazonaws.com',
-//     database: 'rampup',
-//     password: 'Teste222',
+//     host: '172.17.0.2',
+//     database: 'test',
+//     password: '1234',
 //     port: 5432, // Porta padrão do PostgreSQL
 // });
 const prisma = new PrismaClient()
@@ -30,13 +36,13 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     console.info('received:', event);
 
     try {
-        //const client = await pool.connect();
-        //const result = await client.query('SELECT * FROM dishes'); // Substitua sua_tabela pelo nome da tabela no seu banco de dados
+        // const client = await pool.connect();
+        // const result = await client.query('SELECT * FROM dishes'); // Substitua sua_tabela pelo nome da tabela no seu banco de dados
+        //console.log("\n\n\n\n\n\n\n\n\n----------------------------------------------------", prisma.dishes)
         const items = await prisma.dishes.findMany(); // Substitua 'dish' pelo nome do seu modelo no Prisma
+        // const items = result.rows; // Supondo que você queira retornar todas as linhas da consulta
 
-        //const items = result.rows; // Supondo que você queira retornar todas as linhas da consulta
-
-        //client.release();
+        // client.release();
 
         const response: APIGatewayProxyResult = {
             statusCode: 200,
